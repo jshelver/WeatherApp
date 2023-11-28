@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import https from 'https';
 
 import dotenv from 'dotenv';
@@ -7,9 +7,11 @@ dotenv.config({ path: '../../../../.env'});
 const BASE_API_URL = "https://api.openweathermap.org/data/2.5/weather?";
 const router = Router();
 
-router.get('/test', async (req, res) => {
+router.get('/weather/:cityName', async (req, res) => {
+    const { cityName } = req.params;
+
     try {
-        https.get(`${BASE_API_URL}q=London&appid=${process.env.OPEN_WEATHER_API_KEY}`,
+        https.get(`${BASE_API_URL}q=${cityName}&appid=${process.env.OPEN_WEATHER_API_KEY}`,
             (resp) => {
                 let data = '';
                 resp.on('data', (chunk) => {
