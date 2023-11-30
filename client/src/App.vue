@@ -1,47 +1,49 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { ref, onMounted, watch } from 'vue';
+import axios from 'axios';
+import WeatherInfoCard from './components/WeatherInfoCard.vue';
+
+const cityName = ref('');
+const weather = ref(null);
+
+onMounted(async () => {
+	const response = await axios.get(`/api/weather/${cityName.value}`);
+	weather.value = response.data;
+});
+
+watch(cityName, async (newVal) => {
+	const response = await axios.get(`/api/weather/${newVal}`);
+	weather.value = response.data;
+});
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  	<div class="container">
+		<h1 class="app-title">Weather App</h1>
+		<input v-model="cityName" class="search-input" placeholder="Enter city name here..."/>
+		<WeatherInfoCard :weather="weather"/>
+  	</div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.app-title {
+	margin-top: 20px;
+	font-size: 2.1rem;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.search-input {
+	margin-top: 20px;
+	width: 300px;
+	height: 40px;
+	font-size: 20px;
+	padding: 0 10px;
+	border: 1px solid black;
+	border-radius: 5px;
 }
 </style>
